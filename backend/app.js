@@ -9,8 +9,6 @@ mongoose.connect('mongodb+srv://Gghost_:warnqblYXy4IYSmT@cluster0.smlwmdq.mongod
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-
-
 const app = express();
 
 app.use(express.json());
