@@ -1,22 +1,22 @@
 const bcrypt = require("bcrypt");
-const User = require("../models/user");
+const User = require("../models/user.js");
+const jwt  =  require('jsonwebtoken');
 const { use } = require("../app");
 
 exports.signup = (req, res) => {
-  bcrypt
-    .hash(req.body.password, 10)
+  bcrypt.hash(req.body.password, 10)
     .then((hash) => {
       const user = new User({
         email: req.body.email,
         password: hash,
       });
-      user
-        .save()
+      user.save()
         .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
         .catch((error) => res.status(500).json({ error }));
     })
     .catch((error) => res.status(500).json({ error }));
 };
+
 
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
@@ -36,7 +36,11 @@ exports.login = (req, res, next) => {
           }
           res.status(200).json({
             userId: user._id,
-            token: "TOKEN",
+            token: jwt.sign(
+              {userId: user._id,},
+              'RANDOM_TOKEN_SECRET',
+              {expiresIn: '24h'}
+              )
           });
         })
         .catch((error) => res.status(500).json({ error }));
